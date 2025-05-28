@@ -11,7 +11,7 @@ export const REDIS_CLIENT = 'REDIS_CLIENT';
   providers: [
     RedisService,
     {
-      provide: 'REDIS_CLIENT',
+      provide: REDIS_CLIENT,
       inject: [ConfigService],
       useFactory: (config: ConfigService) => {
         return new Redis({
