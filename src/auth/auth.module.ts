@@ -25,6 +25,7 @@ import { RedisModule } from '../database/redis/redis.module';
   providers: [
     AuthService,
     AuthorizeGuard,
+    RolesGuard,
     {
       provide: HashingProvider,
       useClass: BcryptProvider,
@@ -38,6 +39,12 @@ import { RedisModule } from '../database/redis/redis.module';
       useClass: RolesGuard,
     },
   ],
-  exports: [AuthService, HashingProvider, AuthorizeGuard],
+  exports: [
+    AuthService,
+    HashingProvider,
+    AuthorizeGuard,
+    RolesGuard,
+    JwtModule,
+  ],
 })
 export class AuthModule {}
