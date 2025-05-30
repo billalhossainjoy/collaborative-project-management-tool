@@ -25,7 +25,6 @@ export class AuthController {
   })
   @ApiResponse({ status: 409, description: 'Email already exists' })
   async register(@Body() registerDto: RegisterDto) {
-    console.log('test');
     return this.authService.register(registerDto);
   }
 

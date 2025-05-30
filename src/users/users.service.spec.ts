@@ -3,18 +3,20 @@ import { UsersService } from './users.service';
 import { NotFoundException, UnauthorizedException } from '@nestjs/common';
 import { PrismaService } from '../database/prisma/prisma.service';
 import { HashingProvider } from '../auth/provider/hashing.provider';
-import { Role } from '@prisma/client';
+import { Role, User, UserStatus } from '@prisma/client';
 
 describe('UsersService', () => {
   let service: UsersService;
   let prismaService: PrismaService;
   let hashingProvider: HashingProvider;
-  const user = {
+  const user: User = {
     id: '1',
     name: 'John Doe',
     email: 'john@example.com',
     password: 'hashedPassword123',
-    role: Role.ADMIN,
+    role: Role.MEMBER,
+    status: UserStatus.ACTIVE,
+    avatar: null,
     createdAt: new Date(),
     updatedAt: new Date(),
   };
@@ -133,15 +135,6 @@ describe('UsersService', () => {
 
   describe('findById', () => {
     it('should return a user by ID', async () => {
-      const user = {
-        id: '1',
-        name: 'John Doe',
-        email: 'john@example.com',
-        password: 'hashedPassword123',
-        role: Role.ADMIN,
-        createdAt: new Date(),
-        updatedAt: new Date(),
-      };
       jest.spyOn(prismaService.user, 'findUnique').mockResolvedValue(user);
 
       const result = await service.findById(user.id);

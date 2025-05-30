@@ -64,7 +64,6 @@ export class AuthorizeGuard implements CanActivate {
 
       request.user = user;
     } catch (err) {
-      console.log(err);
       throw new UnauthorizedException();
     }
     if (request.user) return true;
