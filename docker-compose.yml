@@ -1,0 +1,75 @@
+version: '3.8'
+
+services:
+  postgres:
+    image: postgres:15
+    restart: always
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: projectdb
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+    networks:
+      - cpm_network
+
+  redis:
+    image: redis:7
+    restart: always
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis-data:/data
+    networks:
+      - cpm_network
+
+  server:
+    build:
+      context: ./server
+      dockerfile: Dockerfile
+    ports:
+      - "3400:3000"
+    environment:
+      - DATABASE_URL=postgres://postgres:postgres@postgres:5432/cpm
+      - REDIS_URL=redis://redis:6379
+      - CHOKIDAR_USEPOLLING=true
+    env_file:
+      - ./server/.env
+    volumes:
+      - ./server:/usr/src/app
+      - /usr/src/app/node_modules
+    command: ["npm", "run", "start:dev"]
+    depends_on:
+      - postgres
+      - redis
+    networks:
+      - cpm_network
+
+  client:
+    build:
+      context: ./client
+    ports:
+      - "3401:3000"
+    volumes:
+      - ./client:/app
+      - /app/node_modules
+    environment:
+      - NEXT_PUBLIC_API_URL=http://server:3000
+      - CHOKIDAR_USEPOLLING=true
+      - CHOKIDAR_INTERVAL=1000
+    depends_on:
+      - server
+    networks:
+      - cpm_network
+
+volumes:
+  postgres-data:
+    driver: local
+  redis-data:
+    driver: local
+
+networks:
+    cpm_network:
+        driver: bridge
