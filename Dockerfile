@@ -1,8 +1,8 @@
-FROM node:18
+FROM node:23
 
 WORKDIR /usr/src/app
 
-COPY package*.json ./
+COPY package.json ./
 RUN npm install
 
 COPY . .

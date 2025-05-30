@@ -16,7 +16,7 @@ services:
       - cpm_network
 
   redis:
-    image: redis:7
+    image: redis:7-alpine
     restart: always
     ports:
       - "6379:6379"
@@ -27,16 +27,16 @@ services:
 
   server:
     build:
-      context: ./server
+      context: .
       dockerfile: Dockerfile
     ports:
       - "3400:3000"
     environment:
-      - DATABASE_URL=postgres://postgres:postgres@postgres:5432/cpm
-      - REDIS_URL=redis://redis:6379
-      - CHOKIDAR_USEPOLLING=true
+      DATABASE_URL: "postgres://postgres:postgres@postgres:5432/cpm"
+      REDIS_URL: "redis://redis:6379"
+      CHOKIDAR_USEPOLLING: "true"
     env_file:
-      - ./server/.env
+      - .env
     volumes:
       - ./server:/usr/src/app
       - /usr/src/app/node_modules
@@ -44,23 +44,6 @@ services:
     depends_on:
       - postgres
       - redis
-    networks:
-      - cpm_network
-
-  client:
-    build:
-      context: ./client
-    ports:
-      - "3401:3000"
-    volumes:
-      - ./client:/app
-      - /app/node_modules
-    environment:
-      - NEXT_PUBLIC_API_URL=http://server:3000
-      - CHOKIDAR_USEPOLLING=true
-      - CHOKIDAR_INTERVAL=1000
-    depends_on:
-      - server
     networks:
       - cpm_network
 
