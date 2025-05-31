@@ -45,19 +45,3 @@ jobs:
 
       - name: Build
         run: npm run build
-
-#  deploy:
-#    needs: [ test, build ]
-#    runs-on: ubuntu-latest
-#    if: github.ref == 'refs/heads/main'
-#
-#    steps:
-#      - uses: actions/checkout@v3
-#
-#      - name: Install Railway CLI
-#        run: npm install -g @railway/cli
-#
-#      - name: Deploy to Railway
-#        run: railway up
-#        env:
-#          RAILWAY_TOKEN: ${{ secrets.RAILWAY_TOKEN }}
